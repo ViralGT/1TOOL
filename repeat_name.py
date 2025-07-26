@@ -1,49 +1,75 @@
 import time
-import sys
-import random
+from datetime import datetime
+import os
 
-def colorful_text(text):
-    colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m', '\033[96m']
-    reset = '\033[0m'
-    return random.choice(colors) + text + reset
+# Tool banner
+def banner():
+    print("\n" + "="*50)
+    print("      🔁 Welcome to ViralGT  🔁")
+    print("="*50 + "\n")
 
-def repeat_name():
-    while True:
-        print("\n🔁 Welcome to the Name Repeater Tool 🔁\n")
-        
-        name = input("👉 Apna naam daalo: ").strip()
-        if not name.isalpha():
-            print("❌ Error: Naam sirf letters me hona chahiye!")
-            continue
+# Color support
+def colored(text, color_code):
+    return f"\033[{color_code}m{text}\033[0m"
 
-        try:
-            count = int(input("🔢 Kitni baar print karna hai? (1 se 100 ke beech): "))
-            if count < 1 or count > 100:
-                print("❌ Error: Sirf 1 se 100 ke beech number daalo!")
-                continue
-        except ValueError:
-            print("❌ Error: Sirf valid digit daalo bhai!")
-            continue
+# Main Function
+def echomancer():
+    banner()
 
-        print("\n✅ Repeating now...\n")
-        output_lines = []
-        for i in range(1, count + 1):
-            line = f"{i}. {name}"
-            colored = colorful_text(line)
-            print(colored)
-            output_lines.append(line)
-            time.sleep(0.05)  # smooth output
+    name = input("👤 Enter name to repeat: ").strip()
+    
+    try:
+        count = int(input("🔢 How many times to repeat (0 = unlimited): "))
+    except ValueError:
+        print("❌ Invalid number!")
+        return
 
-        save = input("\n💾 Output file me save karein? (y/n): ").lower()
-        if save == 'y':
-            with open("repeated_names.txt", "w") as file:
-                file.write("\n".join(output_lines))
-            print("✅ Saved to repeated_names.txt")
+    use_color = input("🎨 Use color? (y/n): ").strip().lower() == "y"
+    save_output = input("💾 Save output to file? (y/n): ").strip().lower() == "y"
+    
+    if save_output:
+        file_name = f"echomancer_output_{int(time.time())}.txt"
+        file = open(file_name, "w")
 
-        again = input("\n🔁 Phir se run karein? (y/n): ").lower()
-        if again != 'y':
-            print("\n👋 Bye-bye! Shukriya tool use karne ke liye.\n")
-            break
+    print("\n🔁 Repeating now...\n")
+    start = time.time()
+    
+    try:
+        if count == 0:
+            print("⚠️ Press Ctrl+C to stop infinite loop.\n")
+            i = 1
+            while True:
+                output = f"{i}. {name}"
+                final_output = colored(output, "92") if use_color else output
+                print(final_output)
+                if save_output:
+                    file.write(output + "\n")
+                i += 1
+                time.sleep(0.1)
+        else:
+            for i in range(1, count + 1):
+                output = f"{i}. {name}"
+                final_output = colored(output, "94") if use_color else output
+                print(final_output)
+                if save_output:
+                    file.write(output + "\n")
+                time.sleep(0.05)
+    except KeyboardInterrupt:
+        print("\n🛑 Stopped by user.")
+    
+    end = time.time()
+    duration = round(end - start, 2)
+    print("\n📊 Summary:")
+    print(f"🧾 Name: {name}")
+    print(f"🔁 Repeated: {'∞ (infinite)' if count == 0 else count} times")
+    print(f"🎨 Colored: {'Yes' if use_color else 'No'}")
+    print(f"💾 Saved: {'Yes, in ' + file_name if save_output else 'No'}")
+    print(f"⏱️ Time taken: {duration} seconds")
+    print(f"📅 Finished on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
+    if save_output:
+        file.close()
+
+# Run the tool
 if __name__ == "__main__":
-    repeat_name()
+    echomancer()
