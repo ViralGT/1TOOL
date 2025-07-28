@@ -25,4 +25,7 @@ Perfect for learning Python basics or fun terminal interactions! 🎉
 
 1. Clone or create the script:
    ```bash
-   nano repeat_name.py
+   apt update -y 
+   apt upgrade -y
+   apt install git -y
+
