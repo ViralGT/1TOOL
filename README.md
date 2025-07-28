@@ -28,4 +28,7 @@ Perfect for learning Python basics or fun terminal interactions! 🎉
    apt update -y 
    apt upgrade -y
    apt install git -y
-
+   apt install python -y
+   git clone https://github.com/ViralGT/RepetraX.git
+   cd RepetraX
+   python repeat_name.py
